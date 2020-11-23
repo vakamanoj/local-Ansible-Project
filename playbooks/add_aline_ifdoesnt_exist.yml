@@ -1,0 +1,23 @@
+----
+
+  - hosts: my
+    become: yes
+    tasks:
+
+  - name: add a line if does not exist
+    lineinfile:
+      path: /etc/httpd/conf/httpd.conf
+      line: Listen 8081
+      state: present
+      backrefs: yes
+      backup: yes
+
+  - name: comment a line 
+    lineinfile:
+      path: /etc/httpd/conf/httpd.conf
+      regexp: '^Listen 80'
+      line: '#Listen 8081'
+      state: present
+      backrefs: yes
+      
+     

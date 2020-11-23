@@ -1,0 +1,46 @@
+---
+
+
+- hosts: web
+  become: yes
+  tasks:
+
+  - name: install httpd
+    package:
+      name: httpd
+      state: present
+    when: ansible_os_family == "RedHat"
+
+  - name: install httpd
+    package:
+      name: apache2
+      state: present
+    when: ansible_os_family == "Debian"  
+
+  - name: start httpd
+    service:
+      name: httpd
+      state: started
+      enabled: yes
+    when: ansible_os_family == "RedHat"
+
+  - name: start httpd
+    service:
+      name: apache2
+      state: started
+      enabled: yes
+    when: ansible_os_family == "Debian"
+
+  - name: update static web page
+    copy:
+      src: /home/centos/static.html
+      dest: /var/www/html/static.html
+
+  - name: update dynamic web page
+    template:
+      src: /home/centos/dynamic.j2
+      dest: /var/www/html/dynamic.html
+
+
+...
+

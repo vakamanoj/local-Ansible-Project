@@ -1,0 +1,54 @@
+---
+
+
+- hosts: centos
+  become: yes
+  vars:
+    username: manoj
+    http_port: 80
+    doc_root: /var/www/html
+  handlers:  
+  - name: restart httpd
+    service:
+      name: httpd
+      state: restarted
+
+  - name: start httpd
+    service:
+      name: httpd
+      state: started
+      enabled: yes
+ 
+  tasks:
+  - name: selinux
+    selinux:
+      policy: targeted
+      state: permissive
+
+  - name: install httpd
+    package:
+      name: httpd
+      state: present
+    notify:
+       - start httpd
+
+  - name: update web page
+    copy:
+      src: /home/centos/index.html
+      dest: /var/www/html/index.html
+
+  - name: update apache port - 8090
+    template:
+      src: /home/centos/httpd.j2
+      dest: /etc/httpd/conf/httpd.conf
+    notify:
+       - restart httpd
+
+  - name: update dynamic web page
+    template:
+      src: /home/centos/dynamic.j2
+      dest: /var/www/html/dynamic.html
+
+
+...
+

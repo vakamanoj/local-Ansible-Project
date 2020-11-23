@@ -1,0 +1,41 @@
+---
+- hosts: my
+  become: yes
+
+  tasks:
+  - name: selinux
+    selinux:
+      policy: targeted
+      state: permissive
+
+  - name: install httpd
+    package:
+      name: httpd
+      state: present
+
+  - name: start httpd service
+    service:
+      name: httpd
+      state: started
+      enabled: yes
+
+  - name: update the webapp page
+    copy:
+      src: /home/centos/playbooks/index.html
+      dest: /var/www/html/index.html
+
+  - name: update apache port
+    copy:
+      src: /home/centos/playbooks/httpdnew.conf
+      dest: /etc/httpd/conf/httpd.conf
+
+  - name: restart httpd 
+    service:
+      name: httpd
+      state: restarted
+      
+
+
+
+
+...
